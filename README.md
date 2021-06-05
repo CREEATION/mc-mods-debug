@@ -2,7 +2,7 @@
 
 Debug Minecraft Mods by Process of Elimination (soon™)
 
-![mc-mods-debug_n7oONiKjFe](https://user-images.githubusercontent.com/3277769/120883012-25588500-c5db-11eb-9a56-e65a89baba8a.png)
+![mc-mods-debug-1 1 0_VGjvGKIQXQ](https://user-images.githubusercontent.com/3277769/120900935-fe7c6c00-c637-11eb-8745-ed3976995292.png)
 
 # Development
 
@@ -16,3 +16,7 @@ Debug Minecraft Mods by Process of Elimination (soon™)
    1. `npm i` in Visual Studio terminal
    1. close when finished
 1. finally, `npm run tauri-dev` in your favorite code editor/terminal
+
+# Build
+
+1. `npm run tauri-build`
