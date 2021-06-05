@@ -34,11 +34,24 @@ function parseFilepath(filepath: string) {
 }
 
 async function list(dir: string) {
+  while (dir.includes('//')) {
+    dir = dir.replace('//', '/')
+  }
+
+  while (dir.includes('\\')) {
+    dir = dir.replace('\\', '/')
+  }
+
+  if (dir.slice(-1) !== '/') {
+    dir += '/'
+  }
+
   let files = await readDir(dir)
 
   return files
     .map((file) => parseFilepath(file.path))
     .filter((mod) => mod.extensions.includes('.jar'))
+    .sort()
 }
 
 async function toggle(filepath: string) {

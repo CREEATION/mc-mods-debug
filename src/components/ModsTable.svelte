@@ -1,9 +1,6 @@
 <script lang="ts">
   import { list, toggle, rename } from '../api/mods'
 
-  const modsDir =
-    'C:/Users/thomithx/Documents/Twitch/Minecraft/Instances/Create Au Gratin/mods/'
-
   export const columns: Array<{
     key: string
     label?: string
@@ -15,12 +12,41 @@
     { key: 'enabled', label: 'Enabled', width: 'min' },
   ]
 
-  $: modsArray = []
-  $: allModsAreEnabled = modsArray.filter((mod) => !mod.enabled).length === 0
+  let modsDir = ''
+  let modsArray = []
+  $: allModsAreEnabled = modsArray
+    ? modsArray.filter((mod) => !mod.enabled).length === 0
+    : false
+  $: dirFound = modsArray !== undefined && modsArray.length > 0
 
-  list(modsDir).then((res) => {
-    modsArray = res
-  })
+  function refreshMods(event?) {
+    if (event) {
+      const input: HTMLInputElement = document.querySelector(
+        '#input-mods-directory input'
+      )
+
+      modsDir = input.value
+    }
+
+    list(modsDir)
+      .catch((rej) => {
+        console.warn(`couldn't find mods in directory "${modsDir}"`)
+      })
+      .then(
+        (
+          res: Array<{
+            id: string
+            basename: string
+            name: string
+            path: string
+            extensions: Array<string>
+            enabled: boolean
+          }>
+        ) => {
+          modsArray = res
+        }
+      )
+  }
 
   async function toggleModEvent(event) {
     let targetModId: string
@@ -53,77 +79,116 @@
       return mod
     })
   }
+
+  // init
+  refreshMods()
 </script>
 
-<div>
-  Mods:
-  {#await modsArray}
-    ?
-  {:then modsArray}
-    {modsArray.length}
-  {/await}
+<div id="input-mods-directory">
+  <input
+    type="text"
+    value={modsDir}
+    placeholder={`full path to mods directory (including "/mods/")`}
+  />
+  <button on:click={refreshMods}>set directory</button>
 </div>
 
-<table>
-  <thead>
-    <tr>
-      {#each columns as column}
-        {#if column.type === 'checkbox'}
-          <input
-            on:click={toggleAllModsEvent}
-            type="checkbox"
-            checked={allModsAreEnabled}
-          />
-        {:else}
-          <th class="column-head--{column.width}">
-            {column.label}
-          </th>
-        {/if}
-      {/each}
-    </tr>
-  </thead>
+{#if dirFound}
+  <h3>
+    Mods:
+    {#await modsArray}
+      ?
+    {:then modsArray}
+      {modsArray ? modsArray.filter((mod) => mod.enabled).length : 0}/{modsArray
+        ? modsArray.length
+        : 0}
+    {/await}
+  </h3>
 
-  {#await modsArray}
-    <h1>loading mods...</h1>
-  {:then modsArray}
-    <tbody>
-      {#each modsArray as mod}
-        <tr
-          class="row"
-          class:row--enabled={mod.enabled}
-          class:row--disabled={!mod.enabled}
-        >
-          {#each columns as column}
-            {#if column.type === 'checkbox'}
-              <td>
-                <input
-                  on:input={toggleModEvent}
-                  bind:checked={mod.enabled}
-                  id={mod.id}
-                  type="checkbox"
-                />
-              </td>
-            {:else if column.key === 'enabled'}
-              <td>
-                {mod[column.key] ? '✔' : 'X'}
-              </td>
-            {:else}
-              <td>
-                <label
-                  for={mod.id}
-                  on:click={toggleModEvent}
-                  data-mod-id={mod.id}>{mod[column.key]}</label
-                >
-              </td>
-            {/if}
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  {/await}
-</table>
+  <table>
+    <thead>
+      <tr>
+        {#each columns as column}
+          {#if column.type === 'checkbox'}
+            <input
+              on:click={toggleAllModsEvent}
+              type="checkbox"
+              checked={allModsAreEnabled}
+            />
+          {:else}
+            <th class="column-head--{column.width}">
+              {column.label}
+            </th>
+          {/if}
+        {/each}
+      </tr>
+    </thead>
+
+    {#await modsArray}
+      <h1>loading mods...</h1>
+    {:then modsArray}
+      <tbody>
+        {#each modsArray ? modsArray : [] as mod}
+          <tr
+            class="row"
+            class:row--enabled={mod.enabled}
+            class:row--disabled={!mod.enabled}
+          >
+            {#each columns as column}
+              {#if column.type === 'checkbox'}
+                <td>
+                  <input
+                    on:input={toggleModEvent}
+                    bind:checked={mod.enabled}
+                    id={mod.id}
+                    type="checkbox"
+                  />
+                </td>
+              {:else if column.key === 'enabled'}
+                <td>
+                  {mod[column.key] ? '✔' : 'X'}
+                </td>
+              {:else}
+                <td>
+                  <label
+                    for={mod.id}
+                    on:click={toggleModEvent}
+                    data-mod-id={mod.id}>{mod[column.key]}</label
+                  >
+                </td>
+              {/if}
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    {/await}
+  </table>
+{:else}
+  <div class="error">
+    <span>couldn't find directory :(</span>
+    <pre>{modsDir || "???"}</pre>
+  </div>
+{/if}
 
 <style lang="scss">
+  .error {
+    background: rgba(255, 0, 0, 0.15);
+    padding: 10px;
+    text-align: center;
+
+    pre {
+      font-weight: bold;
+    }
+  }
+
+  #input-mods-directory {
+    input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 5px;
+    }
+  }
+
   table {
     text-align: left;
     line-height: 1.5;
