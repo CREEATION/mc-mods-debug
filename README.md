@@ -8,6 +8,7 @@ Debug Minecraft Mods by Process of Elimination (soon™)
 
 1. clone/download repo
 1. install dependencies
+   1. [See Tauri Docs](https://tauri.studio/en/docs/getting-started/intro#setting-up-your-environment)
    1. [Visual Studio](https://visualstudio.microsoft.com) (Build Tools C++, CMake)
    1. [Microsoft Edge Webview 2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section)
 1. run Visual Studio
