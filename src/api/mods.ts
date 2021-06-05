@@ -1,5 +1,6 @@
 import { readDir, renameFile } from '@tauri-apps/api/fs'
 
+import pathParse from './path-parse'
 import slug from 'slug'
 
 function parseFilepath(filepath: string) {
@@ -19,37 +20,36 @@ function parseFilepath(filepath: string) {
     return str
   }
 
-  let name: string = getFilename(filepath)
-  let extensions: Array<string> = getFileExtensions(name)
-  let basename: string = getFileBasename(name, extensions)
+  const filepathParsed = pathParse(filepath),
+    extensions = getFileExtensions(filepathParsed.base)
 
   return {
-    id: slug(basename),
-    basename,
-    name,
-    path: filepath,
+    id: slug(filepathParsed.base),
+    basename: filepathParsed.base,
+    name: filepathParsed.name.replace(/^(.+)\.jar(?:.disabled)?$/i, '$1'),
+    path: filepathParsed.normalized,
     extensions,
     enabled: !extensions.includes('.disabled'),
   }
 }
 
 async function list(dir: string) {
-  while (dir.includes('//')) {
-    dir = dir.replace('//', '/')
+  const dirParsed = pathParse(dir)
+
+  if (
+    dirParsed.base !== 'mods' &&
+    dirParsed.name !== 'mods' &&
+    !dirParsed.dir.includes('mods')
+  ) {
+    return Promise.reject(
+      `path doesn't include "mods" directory:\n  "${dirParsed.normalized}"`
+    )
   }
 
-  while (dir.includes('\\')) {
-    dir = dir.replace('\\', '/')
-  }
-
-  if (dir.slice(-1) !== '/') {
-    dir += '/'
-  }
-
-  let files = await readDir(dir)
+  let files = await readDir(dirParsed.normalized)
 
   return files
-    .map((file) => parseFilepath(file.path))
+    .map((file) => parseFilepath(pathParse(file.path).normalized))
     .filter((mod) => mod.extensions.includes('.jar'))
     .sort()
 }

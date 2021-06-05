@@ -1,37 +1,26 @@
 <script lang="ts">
-  import { list, toggle, rename } from '../api/mods'
+  import { onMount } from 'svelte'
+  import { writable } from 'svelte/store'
 
-  export const columns: Array<{
-    key: string
-    label?: string
-    type?: string
-    width?: string
-  }> = [
-    { key: 'enable', type: 'checkbox', width: 'min' },
-    { key: 'basename', label: 'Name', width: 'max' },
-    { key: 'enabled', label: 'Enabled', width: 'min' },
-  ]
+  import { list, toggle } from '../api/mods'
 
-  let modsDir = ''
+  const modsDir = writable(
+    localStorage.getItem('mods-dir') !== null
+      ? localStorage.getItem('mods-dir')
+      : ''
+  )
+
   let modsArray = []
-  $: allModsAreEnabled = modsArray
-    ? modsArray.filter((mod) => !mod.enabled).length === 0
-    : false
-  $: dirFound = modsArray !== undefined && modsArray.length > 0
+  let modsDirList = getModsDirList()
 
-  function refreshMods(event?) {
-    if (event) {
-      const input: HTMLInputElement = document.querySelector(
-        '#input-mods-directory input'
-      )
+  modsDir.subscribe((dir) => {
+    localStorage.setItem('mods-dir', dir || '')
+    modsArray = modsArray
+  })
 
-      modsDir = input.value
-    }
-
-    list(modsDir)
-      .catch((rej) => {
-        console.warn(`couldn't find mods in directory "${modsDir}"`)
-      })
+  async function getModsDirList() {
+    modsArray = []
+    return list($modsDir)
       .then(
         (
           res: Array<{
@@ -46,7 +35,33 @@
           modsArray = res
         }
       )
+      .catch((err) => {
+        console.error(err)
+      })
   }
+
+  onMount(() => {
+    try {
+      modsDir.set(localStorage.getItem('mods-dir') || '')
+    } catch (error) {
+      console.error(error)
+    }
+  })
+
+  export const columns: Array<{
+    key: string
+    label?: string
+    type?: string
+    width?: string
+  }> = [
+    { key: 'enable', type: 'checkbox', width: 'min' },
+    { key: 'name', label: 'Name', width: 'max' },
+    { key: 'enabled', label: 'Enabled', width: 'min' },
+  ]
+
+  $: allModsAreEnabled = modsArray
+    ? modsArray.filter((mod) => !mod.enabled).length === 0
+    : false
 
   async function toggleModEvent(event) {
     let targetModId: string
@@ -80,20 +95,27 @@
     })
   }
 
-  // init
-  refreshMods()
+  function handleClick() {
+    modsDirList = getModsDirList()
+  }
 </script>
 
 <div id="input-mods-directory">
-  <input
-    type="text"
-    value={modsDir}
-    placeholder={`full path to mods directory (including "/mods/")`}
-  />
-  <button on:click={refreshMods}>set directory</button>
+  {#await modsDir}
+    <input type="text" disabled placeholder={`loading...`} />
+  {:then}
+    <input
+      type="text"
+      bind:value={$modsDir}
+      placeholder={`full path to mods directory (including "/mods/")`}
+    />
+    <button on:click={handleClick}>set directory</button>
+  {/await}
 </div>
 
-{#if dirFound}
+{#await modsDirList}
+  <h3>...loading</h3>
+{:then}
   <h3>
     Mods:
     {#await modsArray}
@@ -159,16 +181,22 @@
               {/if}
             {/each}
           </tr>
+        {:else}
+          <tr class="row--disabled">
+            <td><input type="checkbox" disabled /></td>
+            <td>no mods found</td>
+            <td>X</td>
+          </tr>
         {/each}
       </tbody>
     {/await}
   </table>
-{:else}
+{:catch}
   <div class="error">
     <span>couldn't find directory :(</span>
-    <pre>{modsDir || "???"}</pre>
+    <pre>{$modsDir || "???"}</pre>
   </div>
-{/if}
+{/await}
 
 <style lang="scss">
   .error {
@@ -193,6 +221,7 @@
     text-align: left;
     line-height: 1.5;
     width: 100%;
+    border: 1px solid gray;
   }
 
   td {
