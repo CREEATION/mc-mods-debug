@@ -53,6 +53,7 @@ export default {
     resolve({
       browser: true,
       dedupe: ['svelte'],
+      preferBuiltins: false,
     }),
     commonjs(),
     typescript({

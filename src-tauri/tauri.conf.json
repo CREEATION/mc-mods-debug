@@ -1,7 +1,7 @@
 {
   "package": {
-    "productName": "Minecraft Mods Debug",
-    "version": "1.0.0"
+    "productName": "mc-mods-debug-1.1.0",
+    "version": "1.1.0"
   },
   "build": {
     "distDir": "../public",
@@ -49,11 +49,24 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "fs": {
+        "all": false,
+        "copyFile": false,
+        "createDir": false,
+        "path": false,
+        "readBinaryFile": false,
+        "readDir": true,
+        "readTextFile": false,
+        "removeDir": false,
+        "removeFile": false,
+        "renameFile": true,
+        "writeBinaryFile": false,
+        "writeFile": false
+      }
     },
     "windows": [
       {
-        "title": "Minecraft Mods Debug",
+        "title": "Minecraft Mods Debug (v1.1.0)",
         "minWidth": 800,
         "minHeight": 600,
         "resizable": true,
