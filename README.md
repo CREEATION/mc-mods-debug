@@ -2,12 +2,13 @@
 
 Debug Minecraft Mods by Process of Elimination (soon™)
 
-![mc-mods-debug_xETPwwqP7O](https://user-images.githubusercontent.com/3277769/120879980-84ac9a00-c5c7-11eb-80a3-ec9c27d74b27.png)
+![mc-mods-debug_n7oONiKjFe](https://user-images.githubusercontent.com/3277769/120883012-25588500-c5db-11eb-9a56-e65a89baba8a.png)
 
 # Development
 
 1. clone/download repo
 1. install dependencies
+   1. [See Tauri Docs](https://tauri.studio/en/docs/getting-started/intro#setting-up-your-environment)
    1. [Visual Studio](https://visualstudio.microsoft.com) (Build Tools C++, CMake)
    1. [Microsoft Edge Webview 2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section)
 1. run Visual Studio
