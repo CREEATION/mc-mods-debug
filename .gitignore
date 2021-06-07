@@ -1,3 +1,10 @@
+# node
 node_modules
+
+# istanbul
+.nyc_output
+coverage
+
+# app
 public/build
 src-tauri/icons

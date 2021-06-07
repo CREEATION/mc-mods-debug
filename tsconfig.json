@@ -1,5 +1,12 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["src/**/*"],
-  "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
+  "include": ["./src/**/*", "./spec/**/*.spec.ts", "./lib/**/*.ts"],
+  "exclude": ["./node_modules/*", "./public/*"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "MCMD": ["./@types/mcmd/index.d.ts"]
+    }
+  }
 }
