@@ -27,6 +27,28 @@ Debug Minecraft Mods by Process of Elimination (soon™)
    1. close when finished
 1. finally, `npm run tauri-dev` in your favorite code editor/terminal
 
-# Build
+# Commands
 
-1. `npm run tauri-build`
+## Check local Tauri Installation
+
+> `npm run tauri info`
+
+## Run Tests
+
+> `npm test`
+
+## Generate Test Coverage Report
+
+> `npm run test-coverage`
+
+## Generate App Icons
+
+> `npm run tauri-icon`
+
+## Start Development Server + Livereload
+
+> `npm run tauri-dev`
+
+## Build Executables
+
+> `npm run tauri-build`
