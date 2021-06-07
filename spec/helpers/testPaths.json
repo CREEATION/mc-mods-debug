@@ -1,0 +1,78 @@
+[
+  {
+    "test": "C:/example.file",
+    "parsePath": {
+      "toEqual": {
+        "id": "cexamplefile",
+        "root": "C:",
+        "dir": "C:",
+        "base": "example.file",
+        "name": "example",
+        "ext": [{ "name": "file" }],
+        "normalized": "C:/example.file"
+      }
+    }
+  },
+  {
+    "test": "C://///Minecraft/\\\\/\\mods\\example.mod.jar.disabled",
+    "fileHasExtension": {
+      "expect": "disabled",
+      "toBe": true
+    },
+    "parsePath": {
+      "toEqual": {
+        "id": "cminecraftmodsexamplemodjardisabled",
+        "root": "C:",
+        "dir": "C:/Minecraft/mods",
+        "base": "example.mod.jar.disabled",
+        "name": "example.mod.jar",
+        "ext": [
+          { "name": "jar", "description": "Executable Jar File" },
+          { "name": "disabled", "description": "Disabled File" }
+        ],
+        "normalized": "C:/Minecraft/mods/example.mod.jar.disabled"
+      }
+    }
+  },
+  {
+    "test": "C://///Minecraft/\\\\/\\mods\\example.mod.jar",
+    "fileHasExtension": {
+      "expect": "disabled",
+      "toBe": false
+    },
+    "parsePath": {
+      "toEqual": {
+        "id": "cminecraftmodsexamplemodjar",
+        "root": "C:",
+        "dir": "C:/Minecraft/mods",
+        "base": "example.mod.jar",
+        "name": "example.mod",
+        "ext": [{ "name": "jar", "description": "Executable Jar File" }],
+        "normalized": "C:/Minecraft/mods/example.mod.jar"
+      }
+    }
+  },
+  {
+    "test": "C:\\\\Example Directory/foo//bar/\\//example.file.disabled",
+    "fileHasExtension": {
+      "expect": "jar",
+      "toBe": false
+    },
+    "parsePath": {
+      "toEqual": {
+        "id": "cexample-directoryfoobarexamplefiledisabled",
+        "root": "C:",
+        "dir": "C:/Example Directory/foo/bar",
+        "base": "example.file.disabled",
+        "name": "example.file",
+        "ext": [
+          {
+            "name": "disabled",
+            "description": "Disabled File"
+          }
+        ],
+        "normalized": "C:/Example Directory/foo/bar/example.file.disabled"
+      }
+    }
+  }
+]

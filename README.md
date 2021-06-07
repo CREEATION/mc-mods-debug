@@ -2,6 +2,16 @@
 
 Debug Minecraft Mods by Process of Elimination (soon™)
 
+---
+
+| Statements                                                            | Branches                                                           | Functions                                                         | Lines                                                            |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
+| ![Statements](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) |
+
+---
+
+# Screenshots
+
 ![mc-mods-debug-1 1 0_VGjvGKIQXQ](https://user-images.githubusercontent.com/3277769/120900935-fe7c6c00-c637-11eb-8745-ed3976995292.png)
 
 # Development
